@@ -1,14 +1,14 @@
 version: "3.8"
 services:
   vpn:
-    image: qmcgaw/gluetun:latest
-    container_name: vpn
+    image: $GLUETUN_IMAGE:$IMAGE_RELEASE
+    container_name: $VPN_CONTAINER
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - $DOCKER_DIR/gluetun:/gluetun
+      - $DOCKER_DIR/$GLUETUN_CONTAINER:/gluetun
     env_file:
       - $DOCKER_DIR/gluetun/.env
     healthcheck:
@@ -24,78 +24,78 @@ services:
       - $TRANSMISSION_PORT:$TRANSMISSION_PORT   # Transmission
       - $NZBGET:$NZBGET   # NZBGet
     networks:
-      - vpn_network
+      - $CONTAINER_NETWORK
 
   jackett:
-    image: linuxserver/jackett:latest
-    container_name: jackett
-    network_mode: "service:vpn"
+    image: $JACKETT_IMAGE:$IMAGE_RELEASE
+    container_name: $JACKETT_CONTAINER
+    network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/jackett:/config
+      - $DOCKER_DIR/$JACKETT_CONTAINER:/config
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   sonarr:
-    image: linuxserver/sonarr:latest
-    container_name: sonarr
-    network_mode: "service:vpn"
+    image: $SONARR_IMAGE:$IMAGE_RELEASE
+    container_name: $SONARR_CONTAINER
+    network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/sonarr:/config
+      - $DOCKER_DIR/$SONARR_CONTAINER:/config
       - $STORAGE_MOUNT/$TVSHOWS_FOLDER:/tv
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   radarr:
-    image: linuxserver/radarr:latest
-    container_name: radarr
-    network_mode: "service:vpn"
+    image: RADARR_IMAGE:$IMAGE_RELEASE
+    container_name: $RADARR_CONTAINER
+    network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/radarr:/config
+      - $DOCKER_DIR/$RADARR_CONTAINER:/config
       - $STORAGE_MOUNT/$MOVIES_FOLDER:/movies
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   transmission:
-    image: linuxserver/transmission:latest
-    container_name: transmission
-    network_mode: "service:vpn"
+    image: $TRANSMISSON_IMAGE:$IMAGE_RELEASE
+    container_name: TRANSMISSION__CONTAINER
+    network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/transmission:/config
+      - $DOCKER_DIR/TRANSMSSION_CONTAINER:/config
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   nzbget:
-    image: linuxserver/nzbget:latest
-    container_name: nzbget
-    network_mode: "service:vpn"
+    image: $NZBGET_IMAGE:$IMAGE_RELEASE
+    container_name: $NZBGET_CONTAINER
+    network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/nzbget:/config
+      - $DOCKER_DIR/$NZBGET_CONTAINER:/config
       - $DOWNLOADS/incomplete:/incomplete
       - $DOWNLOADS/complete:/complete
     restart: unless-stopped
 
   jellyfin:
-    image: linuxserver/jellyfin:latest
+    image: $JELLYFIN_IMAGE:$IMAGE_RELEASE
     container_name: jellyfin
     network_mode: bridge
     environment:
@@ -103,7 +103,7 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - $DOCKER_DIR/jellyfin:/config
+      - $DOCKER_DIR/$JELLYFIN_CONTAINER:/config
       - $STORAGE_MOUNT:/media
     ports:
       - 8096:8096
@@ -113,8 +113,8 @@ services:
       - default
 
   watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
+    image: $WATCHTOWER_IMAGE:$IMAGE_RELEASE
+    container_name: $WATCHTOWER__CONTAINER
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
@@ -125,7 +125,7 @@ services:
       - default
 
 networks:
-  vpn_network:
+  $CONTAINER_NETWORK:
     driver: bridge
   default:
     driver: bridge
