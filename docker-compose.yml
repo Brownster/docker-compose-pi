@@ -18,11 +18,11 @@ services:
       retries: 3
     restart: unless-stopped
     ports:
-      - 9117:9117   # Jackett
-      - 8989:8989   # Sonarr
-      - 7878:7878   # Radarr
-      - 9091:9091   # Transmission
-      - 6789:6789   # NZBGet
+      - $JACKET_PORT:$JACKET_PORT  # Jackett
+      - $SONARR_PORT:$SONARR_PORT   # Sonarr
+      - $RADARR_PORT:$RADARR_PORT  # Radarr
+      - $TRANSMISSION_PORT:$TRANSMISSION_PORT   # Transmission
+      - $NZBGET:$NZBGET   # NZBGet
     networks:
       - vpn_network
 
@@ -36,7 +36,7 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/jackett:/config
-      - /mnt/downloads:/downloads
+      - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   sonarr:
@@ -49,8 +49,8 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/sonarr:/config
-      - /mnt/storage/TVShows:/tv
-      - /mnt/downloads:/downloads
+      - $STORAGE_MOUNT/$TVSHOWS_FOLDER:/tv
+      - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   radarr:
@@ -63,8 +63,8 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/radarr:/config
-      - /mnt/storage/Movies:/movies
-      - /mnt/downloads:/downloads
+      - $STORAGE_MOUNT/$MOVIES_FOLDER:/movies
+      - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   transmission:
@@ -77,7 +77,7 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/transmission:/config
-      - /mnt/downloads:/downloads
+      - $DOWNLOADS:/downloads
     restart: unless-stopped
 
   nzbget:
@@ -90,8 +90,8 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/nzbget:/config
-      - /mnt/downloads/incomplete:/incomplete
-      - /mnt/downloads/complete:/complete
+      - $DOWNLOADS/incomplete:/incomplete
+      - $DOWNLOADS/complete:/complete
     restart: unless-stopped
 
   jellyfin:
@@ -104,7 +104,7 @@ services:
       - PGID=1000
     volumes:
       - $DOCKER_DIR/jellyfin:/config
-      - /mnt/storage:/media
+      - $STORAGE_MOUNT:/media
     ports:
       - 8096:8096
       - 8920:8920
