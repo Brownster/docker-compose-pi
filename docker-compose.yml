@@ -8,9 +8,9 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - $DOCKER_DIR/$GLUETUN_CONTAINER:/gluetun
+      - $DOCKER_DIR/$GLUETUN_CONTAINER:/$GLUETUN_CONTAINER
     env_file:
-      - $DOCKER_DIR/gluetun/.env
+      - $DOCKER_DIR/$GLUETUN_CONTAINER/.env
     healthcheck:
       test: curl --fail http://localhost:8000 || exit 1
       interval: 30s
