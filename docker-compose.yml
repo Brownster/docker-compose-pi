@@ -31,7 +31,7 @@ services:
     container_name: jackett
     network_mode: "service:vpn"
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
@@ -44,7 +44,7 @@ services:
     container_name: sonarr
     network_mode: "service:vpn"
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
@@ -58,7 +58,7 @@ services:
     container_name: radarr
     network_mode: "service:vpn"
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
@@ -72,7 +72,7 @@ services:
     container_name: transmission
     network_mode: "service:vpn"
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
@@ -85,7 +85,7 @@ services:
     container_name: nzbget
     network_mode: "service:vpn"
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
@@ -99,7 +99,7 @@ services:
     container_name: jellyfin
     network_mode: bridge
     environment:
-      - TZ=Europe/London
+      - TZ=$TIMEZONE
       - PUID=1000
       - PGID=1000
     volumes:
