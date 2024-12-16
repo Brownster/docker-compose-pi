@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  vpn:
+  $VPN_CONTAINER:
     image: $GLUETUN_IMAGE:$IMAGE_RELEASE
     container_name: $VPN_CONTAINER
     cap_add:
@@ -26,57 +26,57 @@ services:
     networks:
       - $CONTAINER_NETWORK
 
-  jackett:
+  $JACKETT_CONTAINER:
     image: $JACKETT_IMAGE:$IMAGE_RELEASE
     container_name: $JACKETT_CONTAINER
     network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
       - $DOCKER_DIR/$JACKETT_CONTAINER:/config
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
-  sonarr:
+  $SONARR_CONTAINER:
     image: $SONARR_IMAGE:$IMAGE_RELEASE
     container_name: $SONARR_CONTAINER
     network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
       - $DOCKER_DIR/$SONARR_CONTAINER:/config
       - $STORAGE_MOUNT/$TVSHOWS_FOLDER:/tv
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
-  radarr:
+  $RADARR_CONTAINER:
     image: RADARR_IMAGE:$IMAGE_RELEASE
     container_name: $RADARR_CONTAINER
     network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
       - $DOCKER_DIR/$RADARR_CONTAINER:/config
       - $STORAGE_MOUNT/$MOVIES_FOLDER:/movies
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
-  transmission:
+  $TRANSMISSION__CONTAINER:
     image: $TRANSMISSON_IMAGE:$IMAGE_RELEASE
-    container_name: TRANSMISSION__CONTAINER
+    container_name: $TRANSMISSION__CONTAINER
     network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
-      - $DOCKER_DIR/TRANSMSSION_CONTAINER:/config
+      - $DOCKER_DIR/$TRANSMSSION_CONTAINER:/config
       - $DOWNLOADS:/downloads
     restart: unless-stopped
 
@@ -86,28 +86,28 @@ services:
     network_mode: "service:$VPN_CONTAINER"
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
       - $DOCKER_DIR/$NZBGET_CONTAINER:/config
       - $DOWNLOADS/incomplete:/incomplete
       - $DOWNLOADS/complete:/complete
     restart: unless-stopped
 
-  jellyfin:
+  $JELLYFIN_CONTAINER:
     image: $JELLYFIN_IMAGE:$IMAGE_RELEASE
-    container_name: jellyfin
+    container_name: $JELLYFIN_CONTAINER
     network_mode: bridge
     environment:
       - TZ=$TIMEZONE
-      - PUID=1000
-      - PGID=1000
+      - PGID=$PGUID
+      - PGID=$PGID
     volumes:
       - $DOCKER_DIR/$JELLYFIN_CONTAINER:/config
       - $STORAGE_MOUNT:/media
     ports:
-      - 8096:8096
-      - 8920:8920
+      - $MEDIASERVER_HTTP:$MEDIASERVER_HTTP
+      - $MEDIASERVER_HTTPS:$MEDIASERVER_HTTPS
     restart: unless-stopped
     networks:
       - default
