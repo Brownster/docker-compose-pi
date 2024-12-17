@@ -1,16 +1,16 @@
 version: "3.8"
 services:
-  $VPN_CONTAINER:
-    image: $GLUETUN_IMAGE:$IMAGE_RELEASE
-    container_name: $VPN_CONTAINER
+  ${VPN_CONTAINER}:
+    image: ${VPN_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${VPN_CONTAINER}
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - $DOCKER_DIR/$GLUETUN_CONTAINER:/$GLUETUN_CONTAINER
+      - ${DOCKER_DIR}/${VPN_CONTAINER}:/gluetun
     env_file:
-      - $DOCKER_DIR/$GLUETUN_CONTAINER/.env
+      - ${DOCKER_DIR}/${VPN_CONTAINER}/.env
     healthcheck:
       test: curl --fail http://localhost:8000 || exit 1
       interval: 30s
@@ -18,114 +18,108 @@ services:
       retries: 3
     restart: unless-stopped
     ports:
-      - $JACKET_PORT:$JACKET_PORT  # Jackett
-      - $SONARR_PORT:$SONARR_PORT   # Sonarr
-      - $RADARR_PORT:$RADARR_PORT  # Radarr
-      - $TRANSMISSION_PORT:$TRANSMISSION_PORT   # Transmission
-      - $NZBGET:$NZBGET   # NZBGet
+      - ${JACKET_PORT}:${JACKET_PORT}
+      - ${SONARR_PORT}:${SONARR_PORT}
+      - ${RADARR_PORT}:${RADARR_PORT}
+      - ${TRANSMISSION_PORT}:${TRANSMISSION_PORT}
+      - ${NZBGET}:${NZBGET}
     networks:
-      - $CONTAINER_NETWORK
+      - ${CONTAINER_NETWORK}
 
-  $JACKETT_CONTAINER:
-    image: $JACKETT_IMAGE:$IMAGE_RELEASE
-    container_name: $JACKETT_CONTAINER
-    network_mode: "service:$VPN_CONTAINER"
+  ${JACKETT_CONTAINER}:
+    image: ${JACKETT_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${JACKETT_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$JACKETT_CONTAINER:/config
-      - $DOWNLOADS:/downloads
+      - ${DOCKER_DIR}/${JACKETT_CONTAINER}:/config
+      - ${DOWNLOADS}:/downloads
     restart: unless-stopped
 
-  $SONARR_CONTAINER:
-    image: $SONARR_IMAGE:$IMAGE_RELEASE
-    container_name: $SONARR_CONTAINER
-    network_mode: "service:$VPN_CONTAINER"
+  ${SONARR_CONTAINER}:
+    image: ${SONARR_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${SONARR_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$SONARR_CONTAINER:/config
-      - $STORAGE_MOUNT/$TVSHOWS_FOLDER:/tv
-      - $DOWNLOADS:/downloads
+      - ${DOCKER_DIR}/${SONARR_CONTAINER}:/config
+      - ${STORAGE_MOUNT}/${TVSHOWS_FOLDER}:/tv
+      - ${DOWNLOADS}:/downloads
     restart: unless-stopped
 
-  $RADARR_CONTAINER:
-    image: RADARR_IMAGE:$IMAGE_RELEASE
-    container_name: $RADARR_CONTAINER
-    network_mode: "service:$VPN_CONTAINER"
+  ${RADARR_CONTAINER}:
+    image: ${RADARR_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${RADARR_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$RADARR_CONTAINER:/config
-      - $STORAGE_MOUNT/$MOVIES_FOLDER:/movies
-      - $DOWNLOADS:/downloads
+      - ${DOCKER_DIR}/${RADARR_CONTAINER}:/config
+      - ${STORAGE_MOUNT}/${MOVIES_FOLDER}:/movies
+      - ${DOWNLOADS}:/downloads
     restart: unless-stopped
 
-  $TRANSMISSION__CONTAINER:
-    image: $TRANSMISSON_IMAGE:$IMAGE_RELEASE
-    container_name: $TRANSMISSION__CONTAINER
-    network_mode: "service:$VPN_CONTAINER"
+  ${TRANSMISSION_CONTAINER}:
+    image: ${TRANSMISSION_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${TRANSMISSION_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$TRANSMSSION_CONTAINER:/config
-      - $DOWNLOADS:/downloads
+      - ${DOCKER_DIR}/${TRANSMISSION_CONTAINER}:/config
+      - ${DOWNLOADS}:/downloads
     restart: unless-stopped
 
-  nzbget:
-    image: $NZBGET_IMAGE:$IMAGE_RELEASE
-    container_name: $NZBGET_CONTAINER
-    network_mode: "service:$VPN_CONTAINER"
+  ${NZBGET_CONTAINER}:
+    image: ${NZBGET_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${NZBGET_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$NZBGET_CONTAINER:/config
-      - $DOWNLOADS/incomplete:/incomplete
-      - $DOWNLOADS/complete:/complete
+      - ${DOCKER_DIR}/${NZBGET_CONTAINER}:/config
+      - ${DOWNLOADS}/incomplete:/incomplete
+      - ${DOWNLOADS}/complete:/complete
     restart: unless-stopped
 
-  $JELLYFIN_CONTAINER:
-    image: $JELLYFIN_IMAGE:$IMAGE_RELEASE
-    container_name: $JELLYFIN_CONTAINER
+  ${JELLYFIN_CONTAINER}:
+    image: ${JELLYFIN_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${JELLYFIN_CONTAINER}
     network_mode: bridge
     environment:
-      - TZ=$TIMEZONE
-      - PGID=$PGUID
-      - PGID=$PGID
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - $DOCKER_DIR/$JELLYFIN_CONTAINER:/config
-      - $STORAGE_MOUNT:/media
+      - ${DOCKER_DIR}/${JELLYFIN_CONTAINER}:/config
+      - ${STORAGE_MOUNT}:/media
     ports:
-      - $MEDIASERVER_HTTP:$MEDIASERVER_HTTP
-      - $MEDIASERVER_HTTPS:$MEDIASERVER_HTTPS
+      - ${MEDIASERVER_HTTP}:${MEDIASERVER_HTTP}
+      - ${MEDIASERVER_HTTPS}:${MEDIASERVER_HTTPS}
     restart: unless-stopped
-    networks:
-      - default
 
-  watchtower:
-    image: $WATCHTOWER_IMAGE:$IMAGE_RELEASE
-    container_name: $WATCHTOWER__CONTAINER
+  ${WATCHTOWER_CONTAINER}:
+    image: ${WATCHTOWER_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${WATCHTOWER_CONTAINER}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE="0 3 * * *" # Run daily at 3 AM
+      - WATCHTOWER_POLL_INTERVAL=3600
     restart: unless-stopped
-    networks:
-      - default
 
 networks:
-  $CONTAINER_NETWORK:
-    driver: bridge
-  default:
+  ${CONTAINER_NETWORK}:
     driver: bridge
