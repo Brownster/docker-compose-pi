@@ -8,7 +8,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - ${DOCKER_DIR}/${VPN_CONTAINER}:/gluetun
+      - "${DOCKER_DIR}/${VPN_CONTAINER}:/gluetun"
     env_file:
       - ${DOCKER_DIR}/${VPN_CONTAINER}/.env
     healthcheck:
@@ -92,6 +92,23 @@ services:
       - ${DOCKER_DIR}/${NZBGET_CONTAINER}:/config
       - ${DOWNLOADS}/incomplete:/incomplete
       - ${DOWNLOADS}/complete:/complete
+    restart: unless-stopped
+
+  ${GET_IPLAYER}:
+    image: ${GET_IPLAYER_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${GET_IPLAYER}
+    network_mode: bridge
+    environment:
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - INCLUDERADIO=${INCLUDERADIO}
+      - ENABLEIMPORT=${ENABLEIMPORT}
+    volumes:
+      - ${DOCKER_DIR}/${GET_IPLAYER}/config:/config
+      - ${DOWNLOADS}/complete:/downloads
+    ports:
+      - ${GET_IPLAYER_PORT}:${GET_IPLAYER_PORT}
     restart: unless-stopped
 
   ${JELLYFIN_CONTAINER}:
