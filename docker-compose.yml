@@ -132,6 +132,7 @@ services:
     container_name: pi-health-dashboard
     environment:
       - TZ=${TIMEZONE}
+      - DISK_PATH=${STORAGE_MOUNT}
     ports:
       - 8080:8080
     volumes:
