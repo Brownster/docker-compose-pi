@@ -126,7 +126,7 @@ This repository provides a comprehensive Docker Compose configuration to deploy 
 4. Access the services via their respective ports defined in the `.env` file.
 
 ## Folder Structure
-Ensure the following folder structure is maintained:
+By Default the following folder structure is used unless `.env` file is edited:
 - `/mnt/storage/Movies` for movies
 - `/mnt/storage/TVShows` for TV shows
 - `/mnt/storage/Music` for music
