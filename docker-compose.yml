@@ -130,18 +130,6 @@ services:
       - ${GET_IPLAYER_PORT}:${GET_IPLAYER_PORT}
     restart: unless-stopped
 
-  airsonic:
-    image: airsonic/airsonic
-    container_name: airsonic
-    volumes:
-      - data:/airsonic/data
-      - music:/airsonic/music
-      - playlists:/airsonic/playlists
-      - podcasts:/airsonic/podcasts
-    ports:
-      - 4040:4040
-    restart: unless-stopped
-
   ${JELLYFIN_CONTAINER}:
     image: ${JELLYFIN_IMAGE}:${IMAGE_RELEASE}
     container_name: ${JELLYFIN_CONTAINER}
@@ -172,7 +160,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
-
   ${WATCHTOWER_CONTAINER}:
     image: ${WATCHTOWER_IMAGE}:${IMAGE_RELEASE}
     container_name: ${WATCHTOWER_CONTAINER}
@@ -181,6 +168,38 @@ services:
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=3600
+    restart: unless-stopped
+
+  ${AIRSONIC_CONTAINER}:
+    image: ${AIRSONIC_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${AIRSONIC_CONTAINER}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/${AIRSONIC_CONTAINER}:/config
+      - ${STORAGE_MOUNT}/${MUSIC_FOLDER}:/music
+      - ${STORAGE_MOUNT}/${PODCAST_FOLDER}:/podcasts
+      - ${STORAGE_MOUNT}/${PLAYLIST_FOLDER}:/playlists
+    ports:
+      - ${AIRSONIC_PORT}:${AIRSONIC_PORT}
+    restart: unless-stopped
+
+  ${LIDARR_CONTAINER}:
+    image: ${LIDARR_IMAGE}:${IMAGE_RELEASE}
+    container_name: ${LIDARR_CONTAINER}
+    network_mode: "service:${VPN_CONTAINER}"
+    environment:
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - ${DOCKER_DIR}/${LIDARR_CONTAINER}:/config
+      - ${STORAGE_MOUNT}/${MUSIC_FOLDER}:/music
+      - ${DOWNLOADS}:/downloads
+    ports:
+      - ${LIDARR_PORT}:${LIDARR_PORT}
     restart: unless-stopped
 
 networks:
