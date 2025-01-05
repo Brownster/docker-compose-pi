@@ -1,6 +1,7 @@
 # Docker Compose for Media Services
 
 This repository provides a comprehensive Docker Compose configuration to deploy a suite of media-related applications. The stack includes services for managing movies, TV shows, music, audiobooks, and podcasts, along with utilities for downloading, transcoding, and streaming.
+You can set environment variable for PIA user and pass.
 
 ## Services Included
 
