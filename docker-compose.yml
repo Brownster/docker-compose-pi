@@ -130,6 +130,18 @@ services:
       - ${GET_IPLAYER_PORT}:${GET_IPLAYER_PORT}
     restart: unless-stopped
 
+  airsonic:
+    image: airsonic/airsonic
+    container_name: airsonic
+    volumes:
+      - data:/airsonic/data
+      - music:/airsonic/music
+      - playlists:/airsonic/playlists
+      - podcasts:/airsonic/podcasts
+    ports:
+      - 4040:4040
+    restart: unless-stopped
+
   ${JELLYFIN_CONTAINER}:
     image: ${JELLYFIN_IMAGE}:${IMAGE_RELEASE}
     container_name: ${JELLYFIN_CONTAINER}
