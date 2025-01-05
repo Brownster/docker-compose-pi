@@ -50,7 +50,8 @@ services:
     volumes:
       - ${DOCKER_DIR}/${SONARR_CONTAINER}:/config
       - ${STORAGE_MOUNT}/${TVSHOWS_FOLDER}:/tv
-      - ${DOWNLOADS}:/downloads
+      - ${DOWNLOADS}/incomplete:/downloads/incomplete
+      - ${DOWNLOADS}/complete:/downloads/complete
     restart: unless-stopped
 
   ${RADARR_CONTAINER}:
@@ -64,7 +65,8 @@ services:
     volumes:
       - ${DOCKER_DIR}/${RADARR_CONTAINER}:/config
       - ${STORAGE_MOUNT}/${MOVIES_FOLDER}:/movies
-      - ${DOWNLOADS}:/downloads
+      - ${DOWNLOADS}/incomplete:/downloads/incomplete
+      - ${DOWNLOADS}/complete:/downloads/complete
     restart: unless-stopped
 
   ${TRANSMISSION_CONTAINER}:
@@ -197,9 +199,26 @@ services:
     volumes:
       - ${DOCKER_DIR}/${LIDARR_CONTAINER}:/config
       - ${STORAGE_MOUNT}/${MUSIC_FOLDER}:/music
-      - ${DOWNLOADS}:/downloads
+      - ${DOWNLOADS}/incomplete:/downloads/incomplete
+      - ${DOWNLOADS}/complete:/downloads/complete
     ports:
       - ${LIDARR_PORT}:${LIDARR_PORT}
+    restart: unless-stopped
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    environment:
+      - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - ${STORAGE_MOUNT}/audiobooks:/audiobooks
+      - ${STORAGE_MOUNT}/${PODCAST_FOLDER}:/podcasts
+      - ${DOCKER_DIR}/audiobookshelf:/config
+      - ${DOCKER_DIR}/audiobookshelf/metadata:/metadata
+    ports:
+      - 13378:80
     restart: unless-stopped
 
 networks:
