@@ -101,8 +101,6 @@ services:
       - ${BOOKS_LIBRARY_DIR}:/books
       - ${AUDIOBOOKS_LIBRARY_DIR}:/audiobooks
       - ${DOWNLOADS_DIR}:/downloads
-    ports:
-      - "5299:5299"
     networks:
       - media-net
     restart: unless-stopped
