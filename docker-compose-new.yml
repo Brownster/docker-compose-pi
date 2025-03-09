@@ -94,13 +94,12 @@ services:
       - TZ=${TZ}
       - PUID=${PUID}
       - PGID=${PGID}
+      - DOCKER_MODS=${DOCKER_MODS}
     volumes:
       - ${LAZYL_CONFIG_DIR}:/config
       - ${BOOKS_LIBRARY_DIR}:/books
       - ${AUDIOBOOKS_LIBRARY_DIR}:/audiobooks
       - ${DOWNLOADS_DIR}:/downloads
-    docker_mods:
-      - universal-calibre
     ports:
       - "5299:5299"
     networks:
