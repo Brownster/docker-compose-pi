@@ -26,6 +26,7 @@ services:
       - "6789:6789"
       - "6500:6500"
       - "8686:8686"
+      - "5299:5299"
     networks:
       - media-net
 
@@ -89,7 +90,7 @@ services:
   lazylibrarian:
     image: linuxserver/lazylibrarian:latest
     container_name: lazylibrarian
-    network_mode: bridge
+    network_mode: "service:vpn"
     environment:
       - TZ=${TZ}
       - PUID=${PUID}
