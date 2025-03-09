@@ -169,6 +169,23 @@ services:
       - media-net
     restart: unless-stopped
 
+  airsonic-advanced:
+    image: lscr.io/linuxserver/airsonic-advanced:latest
+    container_name: airsonic-advanced
+    network_mode: bridge
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - ${AIRSONIC_CONFIG_DIR}:/config
+      - ${MUSIC_LIBRARY_DIR}:/music
+      - ${PLAYLISTS_DIR}:/playlists
+      - ${PODCASTS_LIBRARY_DIR}:/podcasts
+    ports:
+      - "4040:4040"
+    restart: unless-stopped
+
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     container_name: audiobookshelf
