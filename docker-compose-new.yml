@@ -86,6 +86,27 @@ services:
       - ${DOWNLOADS_DIR}:/downloads
     restart: unless-stopped
 
+  lazylibrarian:
+    image: linuxserver/lazylibrarian:latest
+    container_name: lazylibrarian
+    network_mode: bridge
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - ${LAZYL_CONFIG_DIR}:/config
+      - ${BOOKS_LIBRARY_DIR}:/books
+      - ${AUDIOBOOKS_LIBRARY_DIR}:/audiobooks
+      - ${DOWNLOADS_DIR}:/downloads
+    docker_mods:
+      - universal-calibre
+    ports:
+      - "5299:5299"
+    networks:
+      - media-net
+    restart: unless-stopped
+
   transmission:
     image: linuxserver/transmission:latest
     container_name: transmission
@@ -144,27 +165,6 @@ services:
       - ${DOWNLOADS_DIR}/getiplayer:/downloads/incomplete
     ports:
       - "1935:1935"
-    networks:
-      - media-net
-    restart: unless-stopped
-
-  lazylibrarian:
-    image: linuxserver/lazylibrarian:latest
-    container_name: lazylibrarian
-    network_mode: bridge
-    environment:
-      - TZ=${TZ}
-      - PUID=${PUID}
-      - PGID=${PGID}
-    volumes:
-      - ${LAZYL_CONFIG_DIR}:/config
-      - ${BOOKS_LIBRARY_DIR}:/books
-      - ${AUDIOBOOKS_LIBRARY_DIR}:/audiobooks
-      - ${DOWNLOADS_DIR}:/downloads
-    docker_mods:
-      - universal-calibre
-    ports:
-      - "5299:5299"
     networks:
       - media-net
     restart: unless-stopped
