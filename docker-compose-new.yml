@@ -220,28 +220,94 @@ services:
       - media-net
     restart: unless-stopped
 
-  pi-health-dashboard:
-    image: brownster/pi-health:latest
-    container_name: pi-health-dashboard
-    environment:
-      - TZ=${TZ}
-      - DISK_PATH=${MEDIA_DIR}
-      - DISK_PATH_2=${DOWNLOADS_DIR}
-      - DOCKER_COMPOSE_PATH=/config/docker-compose.yml
-      - ENV_FILE_PATH=/config/.env
-      - BACKUP_DIR=/config/backups
+  # Docker Monitoring
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
     ports:
       - "8080:8080"
     volumes:
-      - /proc:/host_proc:ro
-      - /sys:/host_sys:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /home/holly/docker:/config
-      - ${MEDIA_DIR}:${MEDIA_DIR}
-      - ${DOWNLOADS_DIR}:${DOWNLOADS_DIR}
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - media-net
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
     restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host_proc:ro
+      - /sys:/host_sys:ro
+      - /:/rootfs:ro
+    networks:
+      - media-net
+
+  rpi-exporter:
+    image: lukasmalkmus/rpi_exporter:latest
+    container_name: rpi-exporter
+    restart: unless-stopped
+    ports:
+      - "9243:9243"
+    networks:
+      - media-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ${PROMETHEUS_CONFIG_DIR}:/etc/prometheus
+      - ${PROMETHEUS_DATA_DIR}:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - media-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - ${GRAFANA_CONFIG_DIR}:/etc/grafana
+      - ${GRAFANA_DATA_DIR}:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    ports:
+      - "3000:3000"
+    networks:
+      - media-net
+
+  sonarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:latest
+    container_name: sonarr-exporter
+    restart: unless-stopped
+    environment:
+      - PORT=9707
+      - URL=http://sonarr:8989
+      - APIKEY=${SONARR_API_KEY}
+    ports:
+      - "9707:9707"
+    networks:
+      - media-net
+
+  radarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:latest
+    container_name: radarr-exporter
+    restart: unless-stopped
+    environment:
+      - PORT=9708
+      - URL=http://radarr:7878
+      - APIKEY=${RADARR_API_KEY}
+    ports:
+      - "9708:9708"
+    networks:
+      - media-net
 
   watchtower:
     image: containrrr/watchtower:latest
