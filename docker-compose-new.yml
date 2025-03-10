@@ -325,6 +325,18 @@ services:
       - WATCHTOWER_INCLUDE=vpn,sonarr,radarr,pi-health-dashboard,audiobookshelf,get_iplayer,nzbget,rdtclient,transmission,lidarr,jackett,lazylibrarian,jellyfin
     restart: unless-stopped
 
+  transmission-exporter:
+    image: metalmatze/transmission-exporter:latest
+    container_name: transmission-exporter
+    environment:
+      - TRANSMISSION_URL=http://transmission:9091/transmission/rpc
+      - TRANSMISSION_USER=your_username
+      - TRANSMISSION_PASS=your_password
+    ports:
+      - "9116:9116"
+    networks:
+      - media-net
+
 networks:
   media-net:
     driver: bridge
