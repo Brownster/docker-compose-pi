@@ -293,6 +293,19 @@ services:
     networks:
       - media-net
 
+  nzbget-exporter:
+    image: clambin/nzbget-exporter:latest
+    container_name: nzbget-exporter
+    environment:
+      - NZBGET_HOST=nzbget
+      - NZBGET_PORT=6789
+      - NZBGET_USERNAME=your_username
+      - NZBGET_PASSWORD=your_password
+    ports:
+      - "9710:9710"
+    networks:
+      - media-net
+
   watchtower:
     image: containrrr/watchtower:latest
     container_name: watchtower
