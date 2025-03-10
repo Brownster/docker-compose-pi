@@ -314,17 +314,6 @@ services:
     networks:
       - media-net
 
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_POLL_INTERVAL=3600
-      - WATCHTOWER_INCLUDE=vpn,sonarr,radarr,pi-health-dashboard,audiobookshelf,get_iplayer,nzbget,rdtclient,transmission,lidarr,jackett,lazylibrarian,jellyfin
-    restart: unless-stopped
-
   transmission-exporter:
     image: metalmatze/transmission-exporter:latest
     container_name: transmission-exporter
@@ -336,6 +325,17 @@ services:
       - "9116:9116"
     networks:
       - media-net
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=3600
+      - WATCHTOWER_INCLUDE=vpn,sonarr,radarr,pi-health-dashboard,audiobookshelf,get_iplayer,nzbget,rdtclient,transmission,lidarr,jackett,lazylibrarian,jellyfin,prometheus,cadvisor,node-exporter,rpi-exporter,sonarr-exporter,transmission-exporter,node-exporter,radarr-exporter,nzbget-exporter,
+    restart: unless-stopped
 
 networks:
   media-net:
