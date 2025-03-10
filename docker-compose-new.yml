@@ -101,8 +101,6 @@ services:
       - ${BOOKS_LIBRARY_DIR}:/books
       - ${AUDIOBOOKS_LIBRARY_DIR}:/audiobooks
       - ${DOWNLOADS_DIR}:/downloads
-    networks:
-      - media-net
     restart: unless-stopped
 
   transmission:
@@ -305,14 +303,6 @@ services:
     networks:
       - media-net
 
-  node-exporter:
-    image: prom/node-exporter:latest
-    container_name: node-exporter
-    ports:
-      - "9100:9100"
-    networks:
-      - media-net
-
   transmission-exporter:
     image: metalmatze/transmission-exporter:latest
     container_name: transmission-exporter
@@ -333,7 +323,7 @@ services:
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_POLL_INTERVAL=3600
-      - WATCHTOWER_INCLUDE=vpn,sonarr,radarr,pi-health-dashboard,audiobookshelf,get_iplayer,nzbget,rdtclient,transmission,lidarr,jackett,lazylibrarian,jellyfin,prometheus,cadvisor,node-exporter,rpi-exporter,sonarr-exporter,transmission-exporter,node-exporter,radarr-exporter,nzbget-exporter,
+      - WATCHTOWER_INCLUDE=vpn,sonarr,radarr,audiobookshelf,get_iplayer,nzbget,rdtclient,transmission,lidarr,jackett,lazylibrarian,jellyfin,prometheus,cadvisor,node-exporter,rpi-exporter,sonarr-exporter,transmission-exporter,radarr-exporter,nzbget-exporter
     restart: unless-stopped
 
 networks:
