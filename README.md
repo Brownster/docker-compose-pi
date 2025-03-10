@@ -104,6 +104,20 @@ You can set environment variable for PIA user and pass.
   - `${DOCKER_DIR}/${GET_IPLAYER}/config:/config`
   - `${DOWNLOADS}/complete:/downloads`
 
+### Monitoring Services
+
+Prometheus: Collects metrics from all services.
+
+Grafana: Visualizes Prometheus data.
+
+cAdvisor: Monitors Docker containers.
+
+Node Exporter: Monitors system performance (CPU, RAM, Disk, Network).
+
+Raspberry Pi Exporter: Tracks Pi-specific metrics (temperature, voltage, throttling).
+
+Exportarr (Sonarr/Radarr): Monitors automation services.
+
 ## Prerequisites
 1. **Docker** and **Docker Compose** must be installed on your system.
 2. Update the `.env` file with appropriate paths and environment variables.
