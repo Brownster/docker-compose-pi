@@ -22,7 +22,7 @@ scrape_configs:
     static_configs:
       - targets: ["radarr-exporter:9708"]
 
-  - job_name: "nzbget"
+  - job_name: "nzbget-exporter"
     static_configs:
       - targets: ["nzbget-exporter:9710"]
 
@@ -30,7 +30,7 @@ scrape_configs:
     static_configs:
       - targets: ["node-exporter:9100"]
 
-  - job_name: "transmission"
+  - job_name: "transmission-exporter"
     static_configs:
       - targets: ["transmission-exporter:9116"]
 
